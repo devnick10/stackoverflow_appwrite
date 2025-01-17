@@ -4,7 +4,6 @@ import { persist } from "zustand/middleware";
 
 import { AppwriteException,ID,Models } from "appwrite";
 import { account } from "@/models/client/config";
-import { async } from '../middleware';
 
 export interface UserPrefs {
        reputation:number
@@ -21,7 +20,8 @@ interface IAuthStore{
     login(email:string,password:string):Promise<
     {
         success:boolean;
-        error?:AppwriteException
+        error?:AppwriteException | null
+
     }>;
     createAccount(
         email:string,
@@ -61,12 +61,14 @@ export const useAuthStore = create<IAuthStore>()(
 
                 try{
                     const session = await account.createEmailPasswordSession(email,password);
-                    const user = [user,{jwt}] = await Promise.all([
 
+                    const [user,{jwt}] = await Promise.all([
+                        
                         account.get<UserPrefs>(),
                         account.createJWT(),
 
                     ])
+
                     if (!user.prefs?.reputation) await account.updatePrefs({reputation:0});
 
                     set({session,user,jwt});
@@ -75,7 +77,9 @@ export const useAuthStore = create<IAuthStore>()(
                 }catch(error){
 
                     console.log(error)
-                    return {success:false,error: error instanceof AppwriteException ? error : null};
+                    return {success:false,error: error instanceof AppwriteException ? error : undefined
+
+                    };
 
                 }
             },
@@ -89,7 +93,7 @@ export const useAuthStore = create<IAuthStore>()(
                 } catch (error) {
 
                     console.log(error)
-                    return {success:false,error: error instanceof AppwriteException ? error : null};
+                    return {success:false,error: error instanceof AppwriteException ? error : undefined};
                 }
             },
             async logout() {
@@ -110,5 +114,5 @@ export const useAuthStore = create<IAuthStore>()(
                 }
             }
         }
-    );
+    )
 )
