@@ -7,7 +7,7 @@ import createVoteColletion from "./vote.colletion";
 
 import { databases } from "./config";
 
-export default async function dbSetup() {
+export default async function getOrCreateDB() {
   try {
 
     await databases.get(db);
