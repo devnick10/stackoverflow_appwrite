@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
        
     try {
         
-        const {questionId,answer,authorId} = await request.json();
+       const {questionId,answer,authorId} = await request.json();
        
        const response =  await databases.createDocument(db,answerColletion,ID.unique(),{
         content:answer,
