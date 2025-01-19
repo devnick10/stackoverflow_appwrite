@@ -1,5 +1,6 @@
 "use client"
 
+import { ModeToggle } from "@/components/ui/modeToggle";
 import { useAuthStore } from "@/store/Auth";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -20,9 +21,16 @@ const Layout = ({children}:{children:React.ReactNode}) =>
     }
 
     return(
-        <div>
-            <div>{children}</div>
-        </div>
+            <div className="flex flex-col  min-h-screen"> {/* Ensures full height */}
+              <div className="w-full flex justify-end p-4">
+                <ModeToggle />
+              </div>
+          
+              <div className="flex flex-grow flex-col items-center justify-center">
+                <div>{children}</div>
+              </div>
+            </div>
+          
     )
 }
 
